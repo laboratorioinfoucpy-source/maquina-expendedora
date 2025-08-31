@@ -1,0 +1,121 @@
+<!-- public/login.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - ÑEMU.IA</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    .logo {
+      font-size: 60px;
+      margin-bottom: 10px;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .system-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #00897b, #00acc1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #34495e;
+    }
+    .input-field {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      outline: none;
+      transition: border 0.3s, box-shadow 0.3s;
+    }
+    .input-field:focus {
+      border-color: #00acc1;
+      box-shadow: 0 0 6px rgba(0,172,193,0.4);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: linear-gradient(90deg, #00acc1, #00897b);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.3s;
+    }
+    button:hover {
+      transform: scale(1.03);
+      opacity: 0.9;
+    }
+    p {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    a {
+      color: #00acc1;
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo y título -->
+    <div class="logo">🧉</div>
+    <div class="system-title">ÑEMU.IA</div>
+
+    <h2>Login</h2>
+    <input type="email" id="email" class="input-field" placeholder="👤 Usuario">
+    <input type="password" id="password" class="input-field" placeholder="🔒 Contraseña">
+    <button id="loginBtn">Ingresar</button>
+    <p>No tienes cuenta? <a href="register.html">Registrate</a></p>
+  </div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabase = createClient(
+  "https://mysqjdsinuwpyojeknfg.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15c3FqZHNpbnV3cHlvamVrbmZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjUyNzUyOCwiZXhwIjoyMDcyMTAzNTI4fQ.IU0iaqTb-8ANUq-lsms8dVzgc-V6ovc0_GSYbI_t9xU"
+)
+
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value
+  const password = document.getElementById("password").value
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  if(error){ alert(error.message); return; }
+  localStorage.setItem("userId", data.user.id)
+  window.location.href = "dashboard.html"
+})
+</script>
+</body>
+</html>

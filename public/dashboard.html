@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>e-Ñemu</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00b894;
+      /* verde e-Ñemu */
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .balance-label {
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .balance {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #00b894;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .btn-link {
+      display: block;
+      margin: 10px 0;
+      background: none;
+      border: none;
+      color: #00b894;
+      /* color base turquesa/verde */
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: opacity 0.3s;
+    }
+
+    .btn-link:hover {
+      color: #00b894;
+      /* mantiene el mismo color al pasar el mouse */
+      opacity: 0.8;
+      /* efecto sutil de transparencia en hover */
+      text-decoration: underline;
+      /* mantiene subrayado */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="title">e-Ñemu</div>
+    <div class="subtitle">Tu compra digital</div>
+
+    <div class="balance-label">Saldo disponible:</div>
+    <div class="balance"><span id="saldo">*</span> Gs</div>
+
+    <button class="btn-primary" onclick="window.location.href='scanner.html'">📷 Escanear QR</button>
+    <button class="btn-link" onclick="window.location.href='transacciones.html'">📜 Ver transacciones</button>
+    <button class="btn-link" id="btnLogout">🚪 Cerrar sesión</button>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    import { API_BASE } from './config.js'; 
+    const supabase = createClient(
+      "https://mysqjdsinuwpyojeknfg.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15c3FqZHNpbnV3cHlvamVrbmZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjUyNzUyOCwiZXhwIjoyMDcyMTAzNTI4fQ.IU0iaqTb-8ANUq-lsms8dVzgc-V6ovc0_GSYbI_t9xU"
+    )
+
+    // Cargar saldo
+    async function cargarSaldo() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/saldo/${user.id}`);
+        const data = await res.json();
+
+        // Convertir a número y formatear con separadores de miles
+        const saldoFormateado = Number(data.saldo).toLocaleString('es-PY');
+
+        document.getElementById("saldo").textContent = saldoFormateado;
+      } catch (err) {
+        console.error("Error cargando saldo:", err);
+      }
+    }
+
+    cargarSaldo();
+
+    // Cerrar sesión
+    async function cerrarSesion() {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error("Error al cerrar sesión:", error.message)
+        return
+      }
+      localStorage.clear()
+      window.location.href = "index.html"
+    }
+
+    document.getElementById("btnLogout").addEventListener("click", cerrarSesion)
+  </script>
+</body>
+
+</html>

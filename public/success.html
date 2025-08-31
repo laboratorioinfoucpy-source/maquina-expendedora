@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Éxito! - e-Ñemu</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: white;
+  }
+
+ .container {
+  max-width: 400px;
+  padding: 25px;
+  background: linear-gradient(135deg, #00b894, #33d9b2);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  text-align: center;
+  color: white; /* Para que el texto se vea sobre el fondo turquesa */
+}
+
+  .success-icon {
+    font-size: 100px;
+    margin-bottom: 15px;
+    animation: bounce 1s ease-in-out;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    60% { transform: translateY(-10px); }
+  }
+
+  .success-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .success-subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: 25px;
+  }
+
+  .new-balance {
+    background: rgba(255,255,255,0.2);
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 25px;
+  }
+
+  .slider-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    background: rgba(255,255,255,0.2);
+    padding: 10px 15px;
+    border-radius: 12px;
+    width: 80%;
+  }
+
+  .slider-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .valor-barras {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 2px;
+  }
+
+  #barra-menta { background-color: #00b894; height: 20px; width: 100%; border-radius: 8px; }
+  #barra-jengibre { background-color: #FFB74D; height: 20px; width: 100%; border-radius: 8px; }
+  #barra-limon { background-color: #FFEB3B; height: 20px; width: 100%; border-radius: 8px; }
+
+  .btn-white {
+    background: white;
+    color: #00b894;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+
+  .btn-white:hover {
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="success-icon">✅</div>
+  <div class="success-title">¡Compra Exitosa!</div>
+  <div class="success-subtitle">Tu yerba mate está lista 🧉</div>
+
+  <div class="new-balance">
+    Nuevo saldo: <span id="saldo">0</span> Gs
+  </div>
+
+  
+
+  <button class="btn-white" id="btnDashboard">🏠 Volver al dashboard</button>
+</div>
+
+<script>
+  
+
+  document.getElementById("saldo").textContent = localStorage.getItem("nuevoSaldo") || 0;
+
+  document.getElementById("btnDashboard").addEventListener("click", () => {
+    window.location.href = "dashboard.html";
+  });
+
+  localStorage.removeItem("mezcla");
+</script>
+</body>
+</html>

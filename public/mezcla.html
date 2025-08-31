@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elige tu mezcla - e-Ñemu</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* Body y contenedor */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f0fdf4 0%, #e6f5eb 100%);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 90%;
+  max-width: 500px;
+  background: #fff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+h2 {
+  color: #00b894;
+  text-align: center;
+}
+
+/* Contenedor de sliders en fila */
+.barras-verticales {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+/* Cada columna de slider */
+.barra-con-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.label-barras {
+  font-weight: bold;
+  color: #555;
+}
+
+.valor-barras {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Sliders verticales más grandes */
+input[type="range"] {
+  -webkit-appearance: slider-vertical;
+  writing-mode: bt-lr; 
+  height: 250px;   /* altura más grande */
+  width: 60px;     /* ancho más grande */
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 50px;     /* thumb más grande */
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid #fff;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  background-color: currentColor;
+}
+
+#menta::-webkit-slider-thumb { color: #00b894; }
+#jengibre::-webkit-slider-thumb { color: #FFB74D; }
+#limon::-webkit-slider-thumb { color: #FFEB3B; }
+
+/* Botón */
+button {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  background-color: #00b894;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #019b6b;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Elige tu mezcla</h2>
+  <div class="barras-verticales">
+    <div class="barra-con-label">
+      <div class="label-barras">Menta</div>
+      <input type="range" min="0" max="100" step="25" id="menta">
+      <div class="valor-barras" id="valor-menta">0%</div>
+    </div>
+
+    <div class="barra-con-label">
+      <div class="label-barras">Jengibre</div>
+      <input type="range" min="0" max="100" step="25" id="jengibre">
+      <div class="valor-barras" id="valor-jengibre">0%</div>
+    </div>
+
+    <div class="barra-con-label">
+      <div class="label-barras">Limón</div>
+      <input type="range" min="0" max="100" step="25" id="limon">
+      <div class="valor-barras" id="valor-limon">0%</div>
+    </div>
+  </div>
+  <button id="confirmar">Confirmar</button>
+</div>
+
+<script type="module">
+  import { API_BASE } from './config.js';
+const sabores = ["menta","jengibre","limon"];
+
+sabores.forEach(sabor => {
+  const input = document.getElementById(sabor);
+  const valor = document.getElementById(`valor-${sabor}`);
+
+  input.addEventListener("input", () => {
+    valor.textContent = input.value + "%";
+  });
+
+  valor.textContent = input.value + "%";
+});
+
+document.getElementById("confirmar").addEventListener("click", async () => {
+  const mezcla = {
+    menta: +document.getElementById("menta").value,
+    jengibre: +document.getElementById("jengibre").value,
+    limon: +document.getElementById("limon").value
+  };
+
+  const userId = localStorage.getItem("userId");
+  const maquinaId = localStorage.getItem("maquinaId");
+
+  if(!userId || !maquinaId){
+    alert("Usuario o máquina no definidos. Volvé a login o escaneo.");
+    return;
+  }
+
+  try {
+   
+    const res = await fetch(`${API_BASE}/dispensar`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ userId, maquinaId, mezcla })
+    });
+
+    const data = await res.json();
+
+    if(data.success){
+      localStorage.setItem("nuevoSaldo", data.nuevoSaldo);
+      localStorage.setItem("mezcla", JSON.stringify(mezcla));
+      window.location.href = "success.html";
+    } else {
+      alert(data.error);
+    }
+  } catch(err){
+    console.error(err);
+    alert("Error conectando con el servidor");
+  }
+});
+</script>
+</body>
+</html>

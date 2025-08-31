@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escanear QR - e-Ñemu</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    .title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00b894;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+    .subtitle {
+      font-size: 1rem;
+      color: #555;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #reader {
+      margin: 0 auto;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    #mensaje {
+      font-weight: bold;
+      text-align: center;
+      margin-top: 15px;
+      color: #555;
+    }
+    .btn-primary, .btn-link {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-primary {
+      background: #00b894;
+      color: white;
+      transition: opacity 0.3s;
+    }
+    .btn-primary:hover {
+      opacity: 0.8;
+    }
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">e-Ñemu</div>
+    <div class="subtitle">Escanea el QR de la máquina</div>
+
+    <div id="reader" style="width: 100%; max-width: 300px;"></div>
+    <p id="mensaje"></p>
+
+    <button class="btn-primary" onclick="window.location.href='dashboard.html'">⬅ Volver al Dashboard</button>
+  </div>
+
+  <script>
+    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+      console.log(`QR detectado: ${decodedText}`);
+
+      if(decodedText.startsWith("MAQ")) {
+        localStorage.setItem("maquinaId", decodedText);
+        document.getElementById("mensaje").textContent = `Máquina detectada: ${decodedText}. Redirigiendo...`;
+
+        setTimeout(() => {
+          window.location.href = "mezcla.html";
+        }, 1000);
+
+        html5QrcodeScanner.clear();
+      } else {
+        document.getElementById("mensaje").textContent = "QR inválido, intenta de nuevo.";
+      }
+    };
+
+    const qrCodeErrorCallback = (errorMessage) => {
+      // solo debug
+    };
+
+    let html5QrcodeScanner = new Html5Qrcode("reader");
+    html5QrcodeScanner.start(
+      { facingMode: "environment" }, 
+      { fps: 10, qrbox: 250 }, 
+      qrCodeSuccessCallback, 
+      qrCodeErrorCallback
+    );
+  </script>
+</body>
+</html>

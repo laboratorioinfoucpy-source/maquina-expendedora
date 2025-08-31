@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transacciones - e-Ñemu</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #00b894;
+      margin-bottom: 5px;
+    }
+    .subtitle {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .transaction-list {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+    .transaction-item {
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      font-size: 0.95rem;
+    }
+    .transaction-item span {
+      display: block;
+      margin: 2px 0;
+    }
+    .btn-primary, .btn-link {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: #00b894;
+      color: white;
+    }
+    .btn-link {
+      background: none;
+      color: #00b894;
+      text-decoration: underline;
+    }
+    .btn-link:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Transacciones</div>
+    <div class="subtitle">Historial de tus ultimas 5 compras</div>
+
+    <div class="transaction-list" id="transactionList">
+      <!-- Las transacciones se insertan aquí -->
+    </div>
+
+    <button class="btn-primary" onclick="window.location.href='dashboard.html'">⬅ Volver al dashboard</button>
+  </div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabase = createClient(
+  "https://mysqjdsinuwpyojeknfg.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im15c3FqZHNpbnV3cHlvamVrbmZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjUyNzUyOCwiZXhwIjoyMDcyMTAzNTI4fQ.IU0iaqTb-8ANUq-lsms8dVzgc-V6ovc0_GSYbI_t9xU"
+)
+
+async function cargarTransacciones() {
+  const { data: { user } } = await supabase.auth.getUser();
+  console.log("Usuario logueado:", user);  
+
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  try {
+    const { data: transacciones, error } = await supabase
+  .from("transacciones")
+  .select("*")
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false })
+  .limit(5);  // 🔹 Aquí limitás a las últimas 5
+
+    if (error) throw error;
+
+    console.log("Todas las transacciones:", transacciones);
+
+    const list = document.getElementById("transactionList");
+    list.innerHTML = '';
+
+    if (transacciones.length === 0) {
+      list.innerHTML = '<p>No tienes transacciones aún.</p>';
+      return;
+    }
+
+    transacciones.forEach(t => {
+      const mezclaObj = t.mezcla; // ✅ ya es objeto
+      const mezclaStr = Object.entries(mezclaObj)
+        .map(([sabor, valor]) => `${sabor}: ${valor}%`)
+        .join(', ');
+
+      const fecha = new Date(t.created_at).toLocaleString();
+      const item = document.createElement('div');
+      item.className = 'transaction-item';
+      item.innerHTML = `
+        <span><strong>Fecha:</strong> ${fecha}</span>
+        <span><strong>Máquina:</strong> ${t.maquina_id}</span>
+        <span><strong>Mezcla:</strong> ${mezclaStr}</span>
+        <span><strong>Monto:</strong> ${t.monto} Gs</span>
+      `;
+      list.appendChild(item);
+    });
+  } catch (err) {
+    console.error("Error cargando transacciones:", err);
+  }
+}
+
+cargarTransacciones();
+</script>
+</body>
+</html>

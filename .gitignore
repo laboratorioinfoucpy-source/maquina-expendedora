@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Builds y dist
+dist/
+build/
+
+# Archivos temporales
+*.log
+.DS_Store
+
+# Configuración local
+.env
+firebase-debug.log

@@ -1,0 +1,126 @@
+/* --- Reset básico y tipografía --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #F1F8E9 0%, #E8F5E8 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+/* --- Contenedor principal (login, dashboard, sliders) --- */
+.container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* --- Títulos --- */
+h2, h3 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* --- Inputs generales --- */
+input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+/* --- Botones generales --- */
+button {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* --- Texto de registro --- */
+p {
+  font-size: 14px;
+}
+
+/* --- Sliders y barras --- */
+.slider-group {
+  margin-bottom: 10px;   /* menos espacio entre sliders */
+    width: 100%;            /* ocupa todo el ancho disponible */
+    max-width: 300px;  
+}
+
+.slider-group label {
+    display: block;
+    margin-bottom: 5px;  /* antes no lo tenías, así el label no queda tan lejos de la barra */
+    font-weight: bold;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+   height: 28px;
+    width: 28px;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+  background-color: #4CAF50;
+}
+
+
+.barra-sabor {
+  height: 16px;           /* más fácil de ver y tocar */
+    border-radius: 8px;
+}
+
+#menta::-webkit-slider-thumb { background: #4CAF50; }
+#jengibre::-webkit-slider-thumb { background: #FFB74D; }
+#limon::-webkit-slider-thumb { background: #FFEB3B; }
+
+/* Y la barra de fondo de cada sabor también si querés: */
+#menta { background: #C8E6C9; }
+#jengibre { background: #FFE0B2; }
+#limon { background: #FFF9C4; }
+
+/* --- Responsivo --- */
+@media (max-width: 450px) {
+  .container {
+    padding: 15px;
+  }
+  input, button {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+}
+
+.valor-barras {
+  text-align: center;
+  margin-top: 5px;
+  font-weight: bold;
+  color: #333;
+  font-size: 14px;
+}
+
